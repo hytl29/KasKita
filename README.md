@@ -7,3 +7,19 @@ Selain itu, sistem ini menyediakan fitur manajemen data siswa yang memungkinkan 
 
 KasKita juga memiliki **fitur monitoring status pembayaran yang dapat menampilkan daftar siswa yang sudah maupun belum melakukan pembayaran pada periode tertentu**, serta **fitur arus kas yang membantu dalam melacak seluruh riwayat pemasukan dan pengeluaran secara terstruktur** berdasarkan waktu dan jenis transaksi.
 
+# Kelebihan dan Kekurangan
+**Kelebihan KasKita (+) :**
+1. Mempermudah pencatatan kas kelas secara digital dan terstruktur
+2. Meningkatkan transparansi keuangan kepada seluruh anggota kelas dan Walikelas
+3. Sistem multi-role yang membagi hak akses sesuai role pengguna
+4. Dashboard informatif dengan data yang mudah dipahami
+5. Tracking pembayaran siswa secara otomatis berdasarkan periode (mingguan)
+6. Mendukung pencatatan pengeluaran dengan dokumentasi (bukti transaksi)
+7. Tersedia fitur pencarian data siswa berdasarkan nama dan NISN
+8. Dapat mengelola data masa lalu (histori transaksi dan pembayaran)
+
+**Kekurangan KasKita (-) :**
+1. Keamanan sistem masih dapat dikembangkan lebih lanjut (misalnya enkripsi data dan proteksi lanjutan)
+2. Belum mendukung notifikasi otomatis (seperti pengingat pembayaran kas kepada siswa)
+3. Tampilan antarmuka (UI/UX) masih dapat ditingkatkan agar lebih modern dan responsif
+4. Fitur yang belum cukup lengkap
