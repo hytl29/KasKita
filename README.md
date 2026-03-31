@@ -32,3 +32,7 @@ KasKita juga memiliki **fitur monitoring status pembayaran yang dapat menampilka
 - Web Server : Apache (XAMPP)
 - Library Visualisasi Data Diagram : Chart.js
 - Tools Pengembangan : Visual Studio Code
+
+
+# Note
+**KasKita** saat ini masih pada tahap pengembangan. Untuk **laporan kas** yang ditampilkan saat ini masih bersifat sementara dan berpotensi mengalami ketidaksesuaian data. Lalu, untuk role lainnya dibutuhkan riset dari sudut pandang role tersebut agar menghasilkan hasil yang maksimal dan user friendly.
