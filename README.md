@@ -1,4 +1,4 @@
-# KasKita
+# Pengantar
 **KasKita** merupakan aplikasi kas kelas berbasis web yang dibuat oleh Hayatul Fattah Kurniawan saat kelas 11 untuk mempermudah pengelolaan keuangan kelas menjadi lebih **rapi, transparan, dan mudah diakses** oleh semua anggota di kelas.
 
 **KasKita** dilengkapi dengan sistem login multi-role yang menyesuaikan login menggunakan NISN atau NIP, terdiri dari **Siswa, Bendahara, Ketua Kelas, dan Walikelas**. Setiap pengguna memiliki hak akses sesuai rolenya. Melalui dashboard interaktif, user dapat melihat informasi penting seperti **total saldo kas, total pemasukan, total pengeluaran, aktivitas transaksi terbaru, serta data dalam bentuk diagram donut (doughnut chart)** untuk memantau status pembayaran siswa.
@@ -23,3 +23,12 @@ KasKita juga memiliki **fitur monitoring status pembayaran yang dapat menampilka
 2. Belum mendukung notifikasi otomatis (seperti pengingat pembayaran kas kepada siswa)
 3. Tampilan antarmuka (UI/UX) masih dapat ditingkatkan agar lebih modern dan responsif
 4. Fitur yang belum cukup lengkap
+
+# Teknologi dan Framework
+Backend : PHP, JavaScript
+Frontend : HTML, CSS, JavaScript
+Framework CSS : Bootstrap
+Database : MySQL
+Web Server : Apache (XAMPP)
+Library Visualisasi Data Diagram : Chart.js
+Tools Pengembangan : Visual Studio Code
