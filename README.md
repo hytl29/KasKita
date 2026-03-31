@@ -25,10 +25,10 @@ KasKita juga memiliki **fitur monitoring status pembayaran yang dapat menampilka
 4. Fitur yang belum cukup lengkap
 
 # Teknologi dan Framework
-Backend : PHP, JavaScript
-Frontend : HTML, CSS, JavaScript
-Framework CSS : Bootstrap
-Database : MySQL
-Web Server : Apache (XAMPP)
-Library Visualisasi Data Diagram : Chart.js
-Tools Pengembangan : Visual Studio Code
+- Backend : PHP, JavaScript
+- Frontend : HTML, CSS, JavaScript
+- Framework CSS : Bootstrap
+- Database : MySQL
+- Web Server : Apache (XAMPP)
+- Library Visualisasi Data Diagram : Chart.js
+- Tools Pengembangan : Visual Studio Code
