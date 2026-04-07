@@ -1,0 +1,330 @@
+/* Grid 3 kolom untuk kartu ringkasan */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+/* Kartu ringkasan (saldo, pemasukan, pengeluaran) */
+.summary-card {
+    border-radius: 18px;
+    padding: 28px 32px;
+    min-height: 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    transition: 0.25s ease;
+    cursor: default;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.summary-card.saldo     { background: linear-gradient(135deg, #93C5FD, #60A5FA); }
+.summary-card.pemasukan { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
+.summary-card.pengeluaran { background: linear-gradient(135deg, #FFCBCB, #FF9A9A); }
+
+/* Teks label dan nilai di dalam kartu */
+.card-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-label {
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    opacity: 0.9;
+}
+
+.card-value {
+    color: #1e293b;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Ikon di sisi kanan kartu */
+.card-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Bar filter (jenis, tahun, bulan) */
+.filter-section {
+    background: white;
+    border-radius: 50px;
+    padding: 8px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filter-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 30px;
+    background: #e8f0fe;
+    flex: 1;
+}
+
+.filter-item:first-child { flex: 2; }
+
+.filter-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+}
+
+.filter-item select {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    color: #1e293b;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* Badge jumlah transaksi */
+.transaksi-count {
+    background: #e8f0fe;
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+}
+
+/* Kontainer utama daftar arus kas */
+.arus-kas-section {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: 0.25s ease;
+}
+
+.arus-kas-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.11);
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+/* Timeline vertikal di sisi kiri */
+.timeline-wrapper {
+    position: relative;
+    padding-left: 48px;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 22px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to bottom, #93C5FD, #60A5FA);
+    border-radius: 10px;
+}
+
+/* Daftar transaksi dengan scroll */
+.transaksi-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: visible;
+    padding-right: 8px;
+}
+
+/* Scrollbar custom untuk daftar transaksi */
+.transaksi-list::-webkit-scrollbar       { width: 6px; }
+.transaksi-list::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+.transaksi-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.transaksi-list::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Baris item transaksi */
+.transaksi-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Titik bulat di timeline untuk setiap item */
+.transaksi-item::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    z-index: 3;
+    transition: all 0.3s ease;
+}
+
+/* Warna titik: hijau untuk masuk, merah untuk keluar */
+.transaksi-item.masuk::before {
+    background: #22c55e;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+}
+
+.transaksi-item.keluar::before {
+    background: #ef4444;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+}
+
+/* Efek hover pada titik timeline */
+.transaksi-item:hover::before {
+    transform: translateY(-50%) scale(1.2);
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Info detail transaksi (judul, nama, tanggal) */
+.transaksi-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+}
+
+/* Ikon transaksi (masuk/keluar) */
+.transaksi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.transaksi-item.masuk .transaksi-icon  { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
+.transaksi-item.keluar .transaksi-icon { background: linear-gradient(135deg, #FFCBCB, #FF9A9A); }
+
+.transaksi-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Teks detail transaksi */
+.transaksi-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.transaksi-judul   { font-weight: 700; font-size: 16px; color: #1e293b; }
+.transaksi-nama    { font-size: 14px; color: #64748b; }
+.transaksi-tanggal { font-size: 12px; color: #94a3b8; }
+
+/* Jumlah transaksi dengan warna sesuai jenis */
+.transaksi-jumlah {
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 30px;
+}
+
+.transaksi-jumlah.text-success { color: #16a34a; background: #D1FAE5; }
+.transaksi-jumlah.text-danger  { color: #dc2626; background: #FFCBCB; }
+
+/* Badge status lunas/belum */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.status-badge.lunas { background: #D1FAE5; color: #16a34a; }
+.status-badge.belum { background: #FFCBCB; color: #dc2626; }
+
+/* Warna teks utilitas */
+.text-success { color: #16a34a; }
+.text-danger  { color: #dc2626; }
+
+/* Pesan kosong saat tidak ada transaksi */
+.no-data {
+    padding: 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #94a3b8;
+    text-align: center;
+    font-style: italic;
+}
+/* Badge minggu pembayaran */
+.minggu-badge {
+    background: #40916c;
+    color: white;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.minggu-badge span { font-weight: 700; }
+
+/* Link lihat dokumentasi pengeluaran */
+.lihat-dokumentasi {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: #2563eb;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.lihat-dokumentasi:hover { text-decoration: underline; }
+
+/* Animasi masuk halaman */
+.fade-in { animation: fadeInUp 0.6s ease; }
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

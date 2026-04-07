@@ -1,0 +1,94 @@
+/* ===== Login Page ===== */
+
+/* Global */
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #eef4ff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Login page layout */
+.login-wrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    width: 360px;
+    padding: 30px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    animation: fadeSlide 3s ease forwards;
+    opacity: 0;
+}
+
+/* Logo icon */
+.icon-circle {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #93C5FD, #60A5FA);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-circle img {
+    width: 28px;
+    height: 28px;
+}
+
+/* Login button */
+.btn-login {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #000;
+    background: linear-gradient(135deg, #93C5FD, #60A5FA);
+    transition: 0.3s ease;
+}
+
+.btn-login:hover {
+    opacity: 0.95;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Toggle password icon */
+.toggle-password-icon {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-password-icon:hover {
+    background: #f3f7ff;
+}
+
+/* Loading spinner */
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #eef4ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Animations */
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}

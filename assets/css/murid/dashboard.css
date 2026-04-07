@@ -1,0 +1,372 @@
+/* Grid 4 kolom untuk kartu ringkasan atas */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 24px;
+}
+
+/* Grid 2 kolom untuk bagian bawah (aktivitas + chart) */
+.dashboard-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-top: 24px;
+}
+
+/* Kartu ringkasan (saldo, masuk, keluar, bayar) */
+.card-summary {
+    height: 145px;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    position: relative;
+    overflow: hidden;
+    transition: 0.25s ease;
+    cursor: pointer;
+}
+
+.card-summary:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.card-summary p {
+    margin: 0;
+    margin-top: 60px;
+    font-size: 14px;
+    color: #555;
+}
+
+.card-summary h4 {
+    font-weight: 700;
+}
+
+/* Ikon di pojok kiri atas kartu */
+.card-summary .icon-circle {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-summary .icon-circle img {
+    width: 28px;
+    height: 28px;
+}
+
+/* Wrapper agar kartu bisa diklik sebagai link */
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Varian warna kartu */
+.card-summary.saldo {
+    background: linear-gradient(135deg, #93C5FD, #60A5FA);
+}
+
+.card-summary.masuk {
+    background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+}
+
+.card-summary.keluar {
+    background: linear-gradient(135deg, #FFCBCB, #FF9A9A);
+}
+
+.card-summary.bayar {
+    background: linear-gradient(135deg, #D6E4FF, #EEF4FF);
+}
+
+/* Kartu aktivitas terbaru */
+.activity-card {
+    background: #f8fbff;
+    min-height: 420px;
+    padding: 22px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    transition: all 0.25s ease;
+}
+
+.activity-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+/* Header kartu aktivitas */
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.activity-header h5 {
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.activity-header a {
+    padding: 6px 14px;
+    border-radius: 10px;
+}
+
+/* Baris item aktivitas */
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+    transition: all 0.25s ease;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item:hover {
+    background: #eef4ff;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.activity-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Ikon masuk/keluar di item aktivitas */
+.activity-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-icon.in {
+    background: #d1fae5;
+}
+
+.activity-icon.out {
+    background: #fee2e2;
+}
+
+.activity-icon img {
+    width: 18px;
+}
+
+/* Teks nama dan tanggal di item aktivitas */
+.activity-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.activity-text small {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+/* Jumlah uang di sisi kanan item */
+.activity-amount {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.activity-amount.plus {
+    color: #16a34a;
+}
+
+.activity-amount.minus {
+    color: #dc2626;
+}
+
+/* Footer "Lihat Detail" */
+.activity-footer {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.activity-footer .detail {
+    font-size: 16px;
+    color: #949494;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.activity-footer .detail:hover {
+    color: #4e4e4e;
+}
+
+/* Meta info (badge minggu) */
+.activity-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Badge minggu pembayaran */
+.badge-minggu {
+    background: #40916c;
+    color: white;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    align-self: flex-start;
+}
+
+/* Tombol gradient biru */
+.btn-gradient {
+    background: linear-gradient(135deg, #93C5FD, #60A5FA);
+    color: #000000;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-block;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Table */
+.table-card {
+    background: #ffffff;
+    border-radius: 14px;
+    margin-top: 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.table-status {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+/* Header tabel */
+.table-status thead {
+    background: linear-gradient(135deg, #93C5FD, #60A5FA);
+}
+
+.table-status thead th {
+    color: #000000;
+    font-weight: 600;
+    padding: 14px 12px;
+    text-align: center;
+    border: none;
+}
+
+/* Radius sudut header tabel */
+.table-status {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 14px 14px 0 0;
+    overflow: hidden;
+}
+
+.table-status thead th {
+    border-radius: 0 !important;
+    border-right: 1px solid rgba(255, 255, 255, .35);
+}
+
+.table-status thead tr:first-child th:first-child {
+    border-top-left-radius: 14px !important;
+}
+
+.table-status thead tr:first-child th:last-child {
+    border-top-right-radius: 14px !important;
+}
+
+/* Sel body tabel */
+.table-status tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #eef2f7;
+    vertical-align: middle;
+    background: #ffffff;
+}
+
+/* Garis vertikal antar kolom */
+.table-status th,
+.table-status td {
+    border-right: 1px solid #e5e7eb;
+}
+
+.table-status th:last-child,
+.table-status td:last-child {
+    border-right: none;
+}
+
+.table-status thead th {
+    border-right: 1px solid rgba(255, 255, 255, .35);
+}
+
+/* Alignment kolom tertentu */
+.table-status tbody td:nth-child(1),
+.table-status tbody td:nth-child(3),
+.table-status tbody td:nth-child(4) {
+    text-align: center;
+}
+
+.table-status tbody td:nth-child(2) {
+    text-align: left;
+    font-weight: 500;
+}
+
+/* Pastikan tabel di dalam kartu status tidak memiliki margin berlebih */
+.activity-card .table-card {
+    margin-top: 10px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.table-status tbody td {
+    padding: 8px 5px !important;
+    font-size: 13px;
+}
+
+.table-status thead th {
+    padding: 8px !important;
+    font-size: 13px;
+}
+
+/* Animasi masuk halaman */
+.fade-in {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
