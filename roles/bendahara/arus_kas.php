@@ -90,7 +90,8 @@ if ($filterJenis !== 'Semua Transaksi') {
     }
 }
 
-// Query transaksi — digroup berdasarkan waktu input (tanggal), bukan periode pembayaran
+// Query transaksi — digroup per tanggal input + bulan + jenis
+// Sehingga bayar per bulan (banyak bulan) tampil sebagai baris terpisah per bulan
 $query = "
     SELECT 
         t.tanggal,
@@ -101,13 +102,13 @@ $query = "
         t.tahun,
         m.nama,
         SUM(t.jumlah) AS total_jumlah,
-        GROUP_CONCAT(t.minggu ORDER BY t.minggu SEPARATOR ', ') AS minggu_list,
+        GROUP_CONCAT(DISTINCT t.minggu ORDER BY t.minggu SEPARATOR ', ') AS minggu_list,
         MAX(t.dokumentasi) AS dokumentasi
     FROM transaksi t
     JOIN murid m ON t.nisn = m.nisn
     $where
     GROUP BY 
-        t.tanggal, t.nisn, t.jenis
+        t.tanggal, t.nisn, t.jenis, t.bulan, t.tahun
     ORDER BY t.tanggal DESC
 ";
 

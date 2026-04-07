@@ -22,8 +22,14 @@ $keluar = mysqli_fetch_assoc($qKeluar)['total'] ?? 0;
 // Hitung saldo (pemasukan - pengeluaran)
 $saldo = $masuk - $keluar;
 
-// Minggu dan tahun saat ini untuk filter pembayaran
-$mingguNow = date('W');
+// Minggu dan bulan saat ini
+$mingguNow = min(4, (int) ceil(date('j') / 7)); // minggu dalam bulan (1-4)
+$bulanMap = [
+    1=>'Januari', 2=>'Februari', 3=>'Maret', 4=>'April',
+    5=>'Mei', 6=>'Juni', 7=>'Juli', 8=>'Agustus',
+    9=>'September', 10=>'Oktober', 11=>'November', 12=>'Desember'
+];
+$bulanNow = $bulanMap[(int) date('n')];
 $tahunNow = date('Y');
 
 // Hitung murid yang sudah bayar minggu ini
@@ -31,8 +37,8 @@ $qSudah = mysqli_query($conn, "
     SELECT COUNT(DISTINCT nisn) AS total
     FROM transaksi
     WHERE jenis = 'Masuk'
-      AND bulan = MONTHNAME(NOW())
-      AND tahun = YEAR(NOW())
+      AND bulan = '$bulanNow'
+      AND tahun = '$tahunNow'
       AND minggu = '$mingguNow'
 ");
 $sudahBayar = mysqli_fetch_assoc($qSudah)['total'] ?? 0;
@@ -53,7 +59,7 @@ $qAktivitas = mysqli_query($conn, "
     SELECT *
     FROM (
 
-        -- PEMASUKAN (DIGABUNG PER 1 SUBMIT)
+        -- PEMASUKAN (DIGABUNG PER 1 SUBMIT — per tanggal, nisn, bulan, tahun)
         SELECT 
             'Masuk' AS jenis,
             t.nisn,
@@ -62,7 +68,7 @@ $qAktivitas = mysqli_query($conn, "
             t.bulan,
             t.tahun,
             SUM(t.jumlah) AS total_jumlah,
-            GROUP_CONCAT(t.minggu ORDER BY t.minggu ASC) AS minggu_list,
+            GROUP_CONCAT(DISTINCT t.minggu ORDER BY t.minggu ASC) AS minggu_list,
             'Pembayaran Kas' AS judul
         FROM transaksi t
         JOIN murid m ON t.nisn = m.nisn

@@ -31,7 +31,7 @@ $bulanMap = [
 // Tentukan tab yang aktif
 $tab = isset($_GET['pengeluaran']) ? 'pengeluaran' : 'pemasukan';
 
-// Simpan pemasukan (cicilan kas per minggu)
+// Simpan pemasukan per minggu
 if (isset($_POST['simpan_masuk'])) {
     $nisn = $_POST['nisn'];
     $tahun = $_POST['tahun'];
@@ -50,6 +50,43 @@ if (isset($_POST['simpan_masuk'])) {
     }
 
     header("Location: buat_transaksi.php?pemasukan");
+    exit;
+}
+
+// Simpan pemasukan per bulan (hanya insert minggu yang belum dibayar)
+if (isset($_POST['simpan_masuk_bulan'])) {
+    $nisn  = $_POST['nisn_bulan'];
+    $tahun = $_POST['tahun_bulan'];
+    $ket   = $_POST['keterangan_bulan'] ?? '';
+
+    if (isset($_POST['bulan_dipilih']) && is_array($_POST['bulan_dipilih'])) {
+        foreach ($_POST['bulan_dipilih'] as $bulan) {
+            // Cek minggu mana yang sudah dibayar di bulan ini
+            $qCek = mysqli_query($conn, "
+                SELECT minggu FROM transaksi
+                WHERE nisn='$nisn' AND tahun='$tahun' AND bulan='$bulan' AND jenis='Masuk'
+            ");
+            $sudahBayar = [];
+            while ($r = mysqli_fetch_assoc($qCek)) {
+                $sudahBayar[] = (int) $r['minggu'];
+            }
+
+            // Insert hanya minggu yang belum dibayar
+            for ($m = 1; $m <= 4; $m++) {
+                if (!in_array($m, $sudahBayar)) {
+                    mysqli_query($conn, "
+                        INSERT INTO transaksi
+                        (id_transaksi, nisn, tanggal, tahun, bulan, minggu, jenis, jumlah, keterangan)
+                        VALUES
+                        (NULL, '$nisn', NOW(), '$tahun', '$bulan', '$m', 'Masuk', 5000, '$ket')
+                    ");
+                }
+            }
+        }
+    }
+
+    header("Location: buat_transaksi.php?pemasukan");
+    exit;
 }
 
 // Simpan pengeluaran
@@ -166,7 +203,7 @@ $riwayatMasuk = mysqli_query($conn, "
         t.tahun,
         t.bulan,
         SUM(t.jumlah) as total_jumlah,
-        GROUP_CONCAT(t.minggu ORDER BY t.minggu ASC) as minggu_list
+        GROUP_CONCAT(DISTINCT t.minggu ORDER BY t.minggu ASC) as minggu_list
     FROM transaksi t
     JOIN murid m ON t.nisn = m.nisn
     WHERE t.jenis='Masuk'
@@ -261,7 +298,18 @@ $saldoBersih = $totalMasuk - $totalKeluar;
                 <!-- Form -->
                 <div class="col-md-7 fade-in">
                     <div class="form-card">
-                        <h5 class="mb-4">Buat Transaksi Pemasukan</h5>
+                        <h5 class="mb-3">Buat Transaksi Pemasukan</h5>
+
+                        <!-- Tab Per Minggu / Per Bulan -->
+                        <div class="tab-container mb-4">
+                            <a id="tabMinggu" href="#" class="custom-tab active-masuk"
+                               onclick="switchSubTab('minggu'); return false;">Bayar Per Minggu</a>
+                            <a id="tabBulan" href="#" class="custom-tab"
+                               onclick="switchSubTab('bulan'); return false;">Bayar Per Bulan</a>
+                        </div>
+
+                        <!-- Form Per Minggu -->
+                        <div id="formWrapMinggu">
                         <form method="POST" id="formPemasukan">
                             <div id="mingguContainer"></div>
 
@@ -280,12 +328,8 @@ $saldoBersih = $totalMasuk - $totalKeluar;
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="fw-bold">Tahun</label>
-                                    <select name="tahun" id="selectTahun" class="form-select" disabled required>
-                                        <option value="" selected disabled>Pilih Tahun</option>
-                                        <option>2025</option>
-                                        <option>2026</option>
-                                        <option>2027</option>
-                                    </select>
+                                    <input type="text" id="selectTahun" name="tahun" class="form-control bg-light" readonly
+                                        placeholder="Tahun">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="fw-bold">Bulan</label>
@@ -297,10 +341,7 @@ $saldoBersih = $totalMasuk - $totalKeluar;
                             <div class="mb-3">
                                 <?php for ($i = 1; $i <= 4; $i++): ?>
                                     <button type="button" class="btn btn-secondary minggu-btn" data-minggu="<?= $i ?>"
-                                        disabled>
-                                        M -
-                                        <?= $i ?>
-                                    </button>
+                                        disabled>M - <?= $i ?></button>
                                 <?php endfor; ?>
                             </div>
 
@@ -319,8 +360,65 @@ $saldoBersih = $totalMasuk - $totalKeluar;
                             <button type="submit" name="simpan_masuk" class="btn btn-gradient-masuk w-100 btn-simpan">
                                 Simpan Pemasukan
                             </button>
-
                         </form>
+                        </div>
+
+                        <!-- Form Per Bulan -->
+                        <div id="formWrapBulan" class="d-none">
+                        <form method="POST" id="formPemasukanBulan">
+                            <div id="bulanContainer"></div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Murid</label>
+                                <select name="nisn_bulan" id="selectMuridBulan" class="form-select" required>
+                                    <option selected disabled value="">Pilih Murid</option>
+                                    <?php foreach ($muridList as $m): ?>
+                                        <option value="<?= $m['nisn'] ?>">
+                                            <?= $m['nama'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold">Tahun</label>
+                                <input type="text" id="selectTahunBulan" name="tahun_bulan"
+                                    class="form-control bg-light" readonly placeholder="Tahun">
+                            </div>
+
+                            <!-- Tombol multi-select bulan -->
+                            <div class="mb-3">
+                                <label class="fw-bold d-block mb-2">Bulan</label>
+                                <?php
+                                $daftarBulanList = ['Januari','Februari','Maret','April','Mei','Juni',
+                                                    'Juli','Agustus','September','Oktober','November','Desember'];
+                                foreach ($daftarBulanList as $bl): ?>
+                                    <button type="button" class="btn btn-secondary bulan-btn"
+                                            data-bulan="<?= $bl ?>" disabled>
+                                        <?= $bl ?>
+                                    </button>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold">Jumlah</label>
+                                <input type="text" id="jumlah_view_bulan" class="form-control" readonly value="Rp 0">
+                                <input type="hidden" id="jumlah_bulan" name="jumlah_bulan" value="0">
+                            </div>
+
+                            <div class="mb-3 fw-bold">
+                                <label>Keterangan (Opsional)</label>
+                                <textarea name="keterangan_bulan" class="form-control" rows="3"
+                                    placeholder="Tambahkan keterangan..."></textarea>
+                            </div>
+
+                            <button type="submit" name="simpan_masuk_bulan"
+                                class="btn btn-gradient-masuk w-100 btn-simpan">
+                                Simpan Pemasukan
+                            </button>
+                        </form>
+                        </div>
+
                     </div>
                 </div>
 
@@ -422,8 +520,8 @@ $saldoBersih = $totalMasuk - $totalKeluar;
 
                         <form method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label class="fw-bold">Bendahara</label>
-                                <input type="text" class="form-control" value="<?= $nama ?>" readonly>
+                                <label class="fw-bold" hidden>Bendahara</label>
+                                <input type="text" class="form-control" value="<?= $nama ?>" readonly hidden>
                                 <input type="hidden" name="bendahara" value="<?= $nama ?>">
                             </div>
 
@@ -598,26 +696,27 @@ $saldoBersih = $totalMasuk - $totalKeluar;
         const selectBulan = document.getElementById('selectBulan');
         const mingguButtons = document.querySelectorAll('.minggu-btn');
 
-        // Event saat murid dipilih
-        selectMurid.addEventListener('change', function () {
+        // Event saat murid dipilih — auto-set tahun berdasarkan riwayat pembayaran
+        selectMurid.addEventListener('change', async function () {
             selectTahun.value = "";
             selectBulan.value = "";
-            selectTahun.disabled = (this.value === "");
-            selectBulan.disabled = true;
             resetMinggu();
-        });
 
-        // Event saat tahun dipilih
-        selectTahun.addEventListener('change', function () {
-            selectBulan.value = "";
-            selectBulan.disabled = (this.value === "");
-            mingguButtons.forEach(btn => {
-                btn.classList.remove('btn-success', 'btn-danger');
-                btn.classList.add('btn-secondary');
-                btn.disabled = true;
+            if (this.value === "") return;
+
+            // Fetch tahun aktif untuk murid ini (tahun pertama yang belum lunas)
+            const res = await fetch("get_next_tahun.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `nisn=${this.value}`
             });
-            mingguDipilih = [];
-            updateJumlah();
+            const data = await res.json();
+
+            // Set tahun sebagai teks readonly
+            selectTahun.value = data.next_tahun;
+
+            // Langsung cek bulan & minggu berdasarkan tahun yang sudah di-set
+            cekMingguDibayar();
         });
 
         // Event saat bulan dipilih
@@ -686,17 +785,6 @@ $saldoBersih = $totalMasuk - $totalKeluar;
             }
         }
 
-        // Update Event Listener Tahun
-        selectTahun.addEventListener('change', function () {
-            if (this.value !== "") {
-                cekMingguDibayar();
-            } else {
-                resetMinggu();
-                selectBulan.value = "";
-            }
-        });
-
-
         // Validasi form pemasukan
         const formPemasukan = document.getElementById('formPemasukan');
         if (formPemasukan) {
@@ -732,6 +820,174 @@ $saldoBersih = $totalMasuk - $totalKeluar;
             if (this.value.trim() === 'Rp') {
                 this.value = 'Rp ';
                 asliInput.value = '';
+            }
+        });
+
+        // ===== Sub-tab Per Minggu / Per Bulan =====
+
+        // Switch antara form per minggu dan per bulan + reset input
+        function switchSubTab(mode) {
+            const tabMinggu  = document.getElementById('tabMinggu');
+            const tabBulan   = document.getElementById('tabBulan');
+            const wrapMinggu = document.getElementById('formWrapMinggu');
+            const wrapBulan  = document.getElementById('formWrapBulan');
+
+            if (mode === 'minggu') {
+                tabMinggu.classList.add('active-masuk');
+                tabBulan.classList.remove('active-masuk');
+                wrapMinggu.classList.remove('d-none');
+                wrapBulan.classList.add('d-none');
+                // Reset form per bulan
+                selectMuridBulan.value = '';
+                selectTahunBulan.value = '';
+                resetBulanBtn();
+            } else {
+                tabBulan.classList.add('active-masuk');
+                tabMinggu.classList.remove('active-masuk');
+                wrapBulan.classList.remove('d-none');
+                wrapMinggu.classList.add('d-none');
+                // Reset form per minggu
+                selectMurid.value  = '';
+                selectTahun.value  = '';
+                selectBulan.value  = '';
+                resetMinggu();
+            }
+        }
+
+        // ===== Form Per Bulan =====
+
+        const selectMuridBulan  = document.getElementById('selectMuridBulan');
+        const selectTahunBulan  = document.getElementById('selectTahunBulan');
+        const bulanButtons      = document.querySelectorAll('.bulan-btn');
+        let bulanDipilih        = [];
+        const hargaPerBulan     = 20000;
+
+        // Saat murid dipilih di form per bulan — auto-set tahun
+        selectMuridBulan.addEventListener('change', async function () {
+            selectTahunBulan.value = '';
+            resetBulanBtn();
+
+            if (!this.value) return;
+
+            // Fetch tahun aktif
+            const res  = await fetch("get_next_tahun.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `nisn=${this.value}`
+            });
+            const data = await res.json();
+            selectTahunBulan.value = data.next_tahun;
+
+            // Aktifkan tombol bulan & tandai yang sudah lunas
+            await cekBulanDibayar();
+        });
+
+        // Cek bulan mana yang sudah lunas (4 minggu terbayar) untuk murid & tahun ini
+        let mingguPerBulanData = {}; // simpan data minggu per bulan untuk kalkulasi jumlah
+
+        async function cekBulanDibayar() {
+            const nisn  = selectMuridBulan.value;
+            const tahun = selectTahunBulan.value;
+            if (!nisn || !tahun) return;
+
+            const res  = await fetch("cek_minggu.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `nisn=${nisn}&tahun=${tahun}&mode=bulan`
+            });
+
+            const result = await res.json();
+            const lunas  = result.lunas;           // bulan yang sudah 4 minggu
+            mingguPerBulanData = result.minggu_per_bulan; // { Januari: 2, Maret: 1, ... }
+
+            bulanButtons.forEach(btn => {
+                const b = btn.dataset.bulan;
+                btn.disabled = false;
+                if (lunas.includes(b)) {
+                    // Sudah lunas — hijau, tidak bisa dipilih
+                    btn.classList.remove('btn-secondary', 'btn-danger');
+                    btn.classList.add('btn-success');
+                    btn.disabled = true;
+                } else {
+                    // Belum lunas — merah, bisa dipilih
+                    btn.classList.remove('btn-secondary', 'btn-success');
+                    btn.classList.add('btn-danger');
+                }
+            });
+        }
+
+        // Klik tombol bulan — multi-select berurutan dari kiri
+        // Klik tombol bulan — pilih berurutan dari bulan pertama yang belum lunas sampai bulan diklik
+        bulanButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                if (this.disabled) return;
+
+                const bulanList = Array.from(bulanButtons);
+                const idxKlik   = bulanList.indexOf(this);
+
+                // Jika bulan ini sudah dipilih → batalkan dari bulan ini ke kanan
+                if (this.classList.contains('active-masuk')) {
+                    for (let i = idxKlik; i < bulanList.length; i++) {
+                        const b = bulanList[i];
+                        if (b.classList.contains('active-masuk')) {
+                            b.classList.remove('active-masuk');
+                            b.classList.add('btn-danger');
+                            bulanDipilih = bulanDipilih.filter(x => x !== b.dataset.bulan);
+                        }
+                    }
+                } else {
+                    // Pilih dari bulan pertama yang belum dipilih & belum lunas, sampai bulan diklik
+                    for (let i = 0; i <= idxKlik; i++) {
+                        const b = bulanList[i];
+                        // Lewati yang sudah lunas (btn-success disabled)
+                        if (b.disabled) continue;
+                        if (!bulanDipilih.includes(b.dataset.bulan)) {
+                            b.classList.remove('btn-danger', 'btn-secondary');
+                            b.classList.add('active-masuk');
+                            bulanDipilih.push(b.dataset.bulan);
+                        }
+                    }
+                }
+
+                updateJumlahBulan();
+            });
+        });
+
+        // Update total jumlah — hitung hanya minggu yang belum dibayar per bulan
+        function updateJumlahBulan() {
+            let total = 0;
+            bulanDipilih.forEach(b => {
+                const sudah = mingguPerBulanData[b] || 0; // minggu yang sudah dibayar
+                const sisa  = 4 - sudah;                  // minggu yang belum dibayar
+                total += sisa * 5000;
+            });
+
+            document.getElementById('jumlah_bulan').value = total;
+            document.getElementById('jumlah_view_bulan').value = formatRupiah(total);
+
+            const container = document.getElementById('bulanContainer');
+            container.innerHTML = '';
+            bulanDipilih.forEach(b => {
+                container.innerHTML += `<input type="hidden" name="bulan_dipilih[]" value="${b}">`;
+            });
+        }
+
+        // Reset semua tombol bulan ke state awal
+        function resetBulanBtn() {
+            bulanButtons.forEach(btn => {
+                btn.classList.remove('btn-success', 'btn-danger', 'active-masuk');
+                btn.classList.add('btn-secondary');
+                btn.disabled = true;
+            });
+            bulanDipilih = [];
+            updateJumlahBulan();
+        }
+
+        // Validasi form per bulan
+        document.getElementById('formPemasukanBulan').addEventListener('submit', function (e) {
+            if (bulanDipilih.length === 0) {
+                e.preventDefault();
+                alert("Bulan belum dipilih!");
             }
         });
 
