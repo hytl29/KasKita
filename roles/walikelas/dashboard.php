@@ -131,7 +131,7 @@ $qAktivitas = mysqli_query($conn, "
                 <div class="icon-circle">
                     <img src="../../assets/img/up.png" alt="Masuk">
                 </div>
-                <p>Total Pemasukan</p>
+                <p>Total Pemasukan (Selama Ini)</p>
                 <h4>Rp <?= number_format($masuk, 0, ',', '.') ?></h4>
             </div>
 
@@ -140,7 +140,7 @@ $qAktivitas = mysqli_query($conn, "
                 <div class="icon-circle">
                     <img src="../../assets/img/down.png" alt="Keluar">
                 </div>
-                <p>Total Pengeluaran</p>
+                <p>Total Pengeluaran (Selama Ini)</p>
                 <h4>Rp <?= number_format($keluar, 0, ',', '.') ?></h4>
             </div>
 
